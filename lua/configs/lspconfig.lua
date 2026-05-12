@@ -1,6 +1,12 @@
 require("nvchad.configs.lspconfig").defaults()
 
-local lspconfig = require("lspconfig")
+local has_native_lsp_api = type(vim.lsp.config) == "function" and type(vim.lsp.enable) == "function"
+local has_lspconfig, lspconfig = pcall(require, "lspconfig")
+
+if not has_native_lsp_api and not has_lspconfig then
+  vim.notify("LSP setup failed: nvim-lspconfig is not available", vim.log.levels.ERROR)
+  return
+end
 
 local has_cmp, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
 local capabilities = vim.lsp.protocol.make_client_capabilities()
@@ -26,10 +32,18 @@ local on_attach = function(client, _)
 end
 
 local function setup(server, opts)
-  lspconfig[server].setup(vim.tbl_deep_extend("force", {
+  local config = vim.tbl_deep_extend("force", {
     capabilities = capabilities,
     on_attach = on_attach,
-  }, opts or {}))
+  }, opts or {})
+
+  if has_native_lsp_api then
+    vim.lsp.config(server, config)
+    vim.lsp.enable(server)
+    return
+  end
+
+  lspconfig[server].setup(config)
 end
 
 -- Core languages
