@@ -6,10 +6,9 @@ local lsp_config_callable = (vim.is_callable and vim.is_callable(lsp_config_api)
 local lsp_config_is_table = type(lsp_config_api) == "table"
 local has_native_lsp_api = type(lsp_enable_api) == "function"
   and (lsp_config_callable or lsp_config_is_table)
-local has_lspconfig, lspconfig = pcall(require, "lspconfig")
 
-if not has_native_lsp_api and not has_lspconfig then
-  vim.notify("LSP setup failed: neither native LSP API nor nvim-lspconfig is available", vim.log.levels.ERROR)
+if not has_native_lsp_api then
+  vim.notify("LSP setup failed: Neovim 0.11+ native LSP API is required", vim.log.levels.ERROR)
   return
 end
 
@@ -42,17 +41,13 @@ local function setup(server, opts)
     on_attach = on_attach,
   }, opts or {})
 
-  if has_native_lsp_api then
-    if lsp_config_is_table and not lsp_config_callable then
-      lsp_config_api[server] = vim.tbl_deep_extend("force", lsp_config_api[server] or {}, config)
-    else
-      lsp_config_api(server, config)
-    end
-    lsp_enable_api(server)
-    return
+  if lsp_config_is_table and not lsp_config_callable then
+    lsp_config_api[server] = vim.tbl_deep_extend("force", lsp_config_api[server] or {}, config)
+  else
+    lsp_config_api(server, config)
   end
 
-  lspconfig[server].setup(config)
+  lsp_enable_api(server)
 end
 
 -- Core languages
