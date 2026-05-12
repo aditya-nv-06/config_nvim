@@ -1,4 +1,5 @@
 local lint = require "lint"
+-- Allow both ansible_lint and ansible-lint linter name styles.
 lint.linters["ansible-lint"] = lint.linters.ansible_lint
 
 lint.linters_by_ft = {
