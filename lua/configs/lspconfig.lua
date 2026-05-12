@@ -1,10 +1,17 @@
 require("nvchad.configs.lspconfig").defaults()
 
-local has_native_lsp_api = type(vim.lsp.config) == "function" and type(vim.lsp.enable) == "function"
+local lsp_config_api = vim.lsp and vim.lsp.config
+local lsp_enable_api = vim.lsp and vim.lsp.enable
+local has_native_lsp_api = type(lsp_enable_api) == "function"
+  and (
+    type(lsp_config_api) == "function"
+    or type(lsp_config_api) == "table"
+    or (vim.is_callable and vim.is_callable(lsp_config_api))
+  )
 local has_lspconfig, lspconfig = pcall(require, "lspconfig")
 
 if not has_native_lsp_api and not has_lspconfig then
-  vim.notify("LSP setup failed: nvim-lspconfig is not available", vim.log.levels.ERROR)
+  vim.notify("LSP setup failed: neither native LSP API nor nvim-lspconfig is available", vim.log.levels.ERROR)
   return
 end
 
@@ -38,8 +45,12 @@ local function setup(server, opts)
   }, opts or {})
 
   if has_native_lsp_api then
-    vim.lsp.config(server, config)
-    vim.lsp.enable(server)
+    if type(lsp_config_api) == "table" and not (vim.is_callable and vim.is_callable(lsp_config_api)) then
+      lsp_config_api[server] = vim.tbl_deep_extend("force", lsp_config_api[server] or {}, config)
+    else
+      lsp_config_api(server, config)
+    end
+    lsp_enable_api(server)
     return
   end
 
