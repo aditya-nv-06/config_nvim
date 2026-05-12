@@ -116,7 +116,7 @@ setup("prismals")
 setup("bashls")
 setup("dockerls")
 setup("taplo")
-setup("groovyls", { filetypes = { "groovy", "Jenkinsfile" } })
+setup("groovyls", { filetypes = { "groovy" } })
 setup("html")
 setup("cssls")
 setup("lua_ls", {
