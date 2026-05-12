@@ -23,6 +23,10 @@ if has_telescope then
   map("n", "<leader>fc", telescope.grep_string, { desc = "Telescope grep word under cursor" })
 end
 
+-- Explorer / Tools
+map("n", "<leader>e", "<cmd>NvimTreeToggle<cr>", { desc = "File Explorer" })
+map("n", "<leader>lg", "<cmd>LazyGit<cr>", { desc = "LazyGit" })
+
 -- Buffers
 map("n", "<S-l>", "<cmd>BufferLineCycleNext<cr>", { desc = "Next buffer" })
 map("n", "<S-h>", "<cmd>BufferLineCyclePrev<cr>", { desc = "Previous buffer" })
