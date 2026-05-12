@@ -4,6 +4,17 @@
 - So you just import its modules , like `require "nvchad.options" , require "nvchad.mappings"`
 - So you can delete the .git from this repo ( when you clone it locally ) or fork it :)
 
+## IDE-style UI features
+
+- Modern top bar and tab experience via **bufferline** + **lualine winbar**
+- Enhanced bottom status line via **lualine**
+- Styled file explorer via **nvim-tree**
+- Improved Telescope UI defaults for a cleaner fuzzy-finder workflow
+
+## Keybindings
+
+- Custom keymaps are documented in [KEYBINDINGS.md](./KEYBINDINGS.md)
+
 # Credits
 
 1) Lazyvim starter https://github.com/LazyVim/starter as nvchad's starter was inspired by Lazyvim's . It made a lot of things easier!
