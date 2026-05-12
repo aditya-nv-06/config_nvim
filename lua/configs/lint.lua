@@ -1,6 +1,5 @@
 local lint = require "lint"
--- Allow both ansible_lint and ansible-lint linter name styles.
-lint.linters["ansible-lint"] = lint.linters.ansible_lint
+-- Match .github/workflows/*.yml or .yaml with cross-platform path separators.
 local github_workflow_pattern = "[/\\]%.github[/\\]workflows[/\\].*%.ya?ml$"
 
 lint.linters_by_ft = {
@@ -12,7 +11,7 @@ lint.linters_by_ft = {
   terraform = { "tflint" },
   tf = { "tflint" },
   yaml = { "yamllint" },
-  ansible = { "ansible-lint" },
+  ansible = { "ansible_lint" },
   sh = { "shellcheck" },
   bash = { "shellcheck" },
   zsh = { "shellcheck" },
