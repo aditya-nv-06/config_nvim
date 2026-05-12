@@ -1,4 +1,5 @@
 local lint = require "lint"
+lint.linters["ansible-lint"] = lint.linters.ansible_lint
 
 lint.linters_by_ft = {
   javascript = { "eslint_d" },
@@ -9,7 +10,7 @@ lint.linters_by_ft = {
   terraform = { "tflint" },
   tf = { "tflint" },
   yaml = { "yamllint" },
-  ansible = { "ansible_lint" },
+  ansible = { "ansible-lint" },
   sh = { "shellcheck" },
   bash = { "shellcheck" },
   zsh = { "shellcheck" },
