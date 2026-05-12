@@ -1,7 +1,7 @@
 local lint = require "lint"
 -- Allow both ansible_lint and ansible-lint linter name styles.
 lint.linters["ansible-lint"] = lint.linters.ansible_lint
-local github_workflow_pattern = "/%.github/workflows/.*%.ya?ml$"
+local github_workflow_pattern = "[/\\]%.github[/\\]workflows[/\\].*%.ya?ml$"
 
 lint.linters_by_ft = {
   javascript = { "eslint_d" },

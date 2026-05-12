@@ -16,6 +16,7 @@ local options = {
     c = { "clang-format" },
     cpp = { "clang-format" },
     rust = { "rustfmt" },
+    -- conform.nvim built-in formatter key for `terraform fmt` is `terraform_fmt`.
     terraform = { "terraform_fmt" },
     tf = { "terraform_fmt" },
     sh = { "shfmt" },
