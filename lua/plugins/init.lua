@@ -139,10 +139,15 @@ return {
       view = {
         width = 25,
         side = "left",
+        preserve_window_proportions = true,
       },
       renderer = {
         group_empty = true,
         highlight_git = true,
+        root_folder_label = false,
+        indent_markers = {
+          enable = true,
+        },
         icons = {
           show = {
             git = true,
@@ -206,7 +211,26 @@ return {
     },
   },
   -- Fuzzy Finder
-  { "nvim-telescope/telescope.nvim" },
+  {
+    "nvim-telescope/telescope.nvim",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    opts = {
+      defaults = {
+        prompt_prefix = "   ",
+        selection_caret = " ",
+        sorting_strategy = "ascending",
+        layout_config = {
+          prompt_position = "top",
+        },
+        path_display = { "smart" },
+      },
+      pickers = {
+        find_files = {
+          hidden = true,
+        },
+      },
+    },
+  },
   -- Syntax Highlighting
   {
     "nvim-treesitter/nvim-treesitter",
@@ -256,10 +280,10 @@ return {
       options = {
         mode = "buffers", -- set to "tabs" to only show tabpages instead of buffers
         numbers = "ordinal",
-        close_command = "bdelete! %d",       -- can be a string | function, see "Mouse actions"
+        close_command = "bdelete! %d", -- can be a string | function, see "Mouse actions"
         right_mouse_command = "bdelete! %d", -- can be a string | function, see "Mouse actions"
-        left_mouse_command = "buffer %d",    -- can be a string | function, see "Mouse actions"
-        middle_mouse_command = nil,           -- can be a string | function, see "Mouse actions"
+        left_mouse_command = "buffer %d", -- can be a string | function, see "Mouse actions"
+        middle_mouse_command = nil, -- can be a string | function, see "Mouse actions"
         indicator = { style = "icon", icon = "▎" },
         buffer_close_icon = "",
         modified_icon = "●",
@@ -269,7 +293,7 @@ return {
         max_name_length = 18,
         max_prefix_length = 15, -- prefix used when a buffer is de-duplicated
         tab_size = 18,
-        diagnostics = "nvim_lsp",   -- or "nvim_lsp" | "coc"
+        diagnostics = "nvim_lsp", -- or "nvim_lsp" | "coc"
         diagnostics_update_in_insert = false,
         offsets = { { filetype = "NvimTree", text = "File Explorer", padding = 1 } },
         show_buffer_icons = true,
@@ -277,10 +301,18 @@ return {
         show_close_icon = true,
         show_tab_indicators = true,
         persist_buffer_sort = true, -- whether or not custom sorted buffers should persist
-        separator_style = "thin",   -- | "thick" | "thin" | { 'any', 'any' },
+        separator_style = "slant", -- "slant" | "padded_slant" | "slope" | "padded_slope" | "thick" | "thin" | { "left", "right" }
         enforce_regular_tabs = false,
         always_show_bufferline = true,
-        sort_by = "id",             -- 'insert_after_current' | 'insert_at_end' | 'id' | 'extension' | 'relative_directory' | 'directory' | 'tabs' | function(buffer_a, buffer_b) end
+        sort_by = "id", -- 'insert_after_current' | 'insert_at_end' | 'id' | 'extension' | 'relative_directory' | 'directory' | 'tabs' | function(buffer_a, buffer_b) end
+        diagnostics_indicator = function(_, _, diag)
+          local s = ""
+          for level, count in pairs(diag) do
+            local icon = level:match "error" and " " or " "
+            s = s .. icon .. count .. " "
+          end
+          return vim.trim(s)
+        end,
       },
     },
   },
@@ -301,7 +333,7 @@ return {
           disabled_filetypes = { statusline = {}, winbar = {} },
           always_divide_middle = true,
           always_show_tabline = true,
-          globalstatus = false,
+          globalstatus = true,
           refresh = {
             statusline = 1000,
             tabline = 1000,
@@ -319,6 +351,13 @@ return {
         inactive_sections = {
           lualine_c = { "filename" },
           lualine_x = { "location" },
+        },
+        winbar = {
+          lualine_c = { "filename" },
+          lualine_x = { "branch" },
+        },
+        inactive_winbar = {
+          lualine_c = { "filename" },
         },
       }
     end,
