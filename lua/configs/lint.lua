@@ -1,6 +1,7 @@
 local lint = require "lint"
 -- Allow both ansible_lint and ansible-lint linter name styles.
 lint.linters["ansible-lint"] = lint.linters.ansible_lint
+local github_workflow_pattern = "/%.github/workflows/.*%.ya?ml$"
 
 lint.linters_by_ft = {
   javascript = { "eslint_d" },
@@ -25,7 +26,7 @@ vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost", "InsertLeave" }, {
     lint.try_lint()
 
     local filename = vim.api.nvim_buf_get_name(0)
-    if filename:match("/%.github/workflows/.*%.ya?ml$") then
+    if filename:match(github_workflow_pattern) then
       lint.try_lint "actionlint"
     end
   end,
