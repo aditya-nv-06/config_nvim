@@ -3,7 +3,7 @@
 -- add yours here
 
 local map = vim.keymap.set
-local has_telescope, telescope = pcall(require, "telescope.builtin")
+local telescope_ok, telescope = pcall(require, "telescope.builtin")
 
 map("n", ";", ":", { desc = "CMD enter command mode" })
 map("i", "jk", "<ESC>")
@@ -11,7 +11,7 @@ map("i", "jk", "<ESC>")
 -- map({ "n", "i", "v" }, "<C-s>", "<cmd> w <cr>")
 
 -- Telescope
-if has_telescope then
+if telescope_ok then
   map("n", "<leader>ff", telescope.find_files, { desc = "Telescope find files" })
   map("n", "<leader>fa", function()
     telescope.find_files { hidden = true, no_ignore = true }
