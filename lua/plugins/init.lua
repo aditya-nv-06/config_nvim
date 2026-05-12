@@ -38,8 +38,53 @@ return {
     end,
   },
   -- LSP Installer/Manager
-  { "williamboman/mason.nvim", config = true },
-  { "williamboman/mason-lspconfig.nvim", config = true },
+  { "williamboman/mason.nvim", opts = {} },
+  { "williamboman/mason-lspconfig.nvim", opts = {} },
+  {
+    "WhoIsSethDaniel/mason-tool-installer.nvim",
+    dependencies = { "williamboman/mason.nvim" },
+    opts = {
+      ensure_installed = {
+        -- LSP servers
+        "lua-language-server",
+        "clangd",
+        "rust-analyzer",
+        "typescript-language-server",
+        "eslint-lsp",
+        "json-lsp",
+        "yaml-language-server",
+        "ansible-language-server",
+        "terraform-ls",
+        "tflint",
+        "bash-language-server",
+        "marksman",
+        "prisma-language-server",
+        "dockerfile-language-server",
+        "taplo",
+        "groovy-language-server",
+
+        -- Formatters
+        "stylua",
+        "prettier",
+        "clang-format",
+        "rustfmt",
+        "shfmt",
+
+        -- Linters
+        "actionlint",
+        "ansible-lint",
+        "yamllint",
+        "markdownlint",
+        "shellcheck",
+        "eslint_d",
+      },
+      auto_update = false,
+      run_on_start = true,
+      start_delay = 3000,
+      debounce_hours = 12,
+    },
+  },
+  { "b0o/schemastore.nvim" },
   -- Hover Docs
   {
     "lewis6991/hover.nvim",
@@ -61,24 +106,11 @@ return {
       vim.o.mousemoveevent = true
     end,
   },
-  -- Null LS
   {
-    "nvimtools/none-ls.nvim",
+    "mfussenegger/nvim-lint",
+    event = { "BufReadPre", "BufNewFile" },
     config = function()
-      local null_ls = require("null-ls")
-      null_ls.setup {
-        sources = {
-          null_ls.builtins.formatting.prettier,
-          null_ls.builtins.diagnostics.eslint_d,
-          null_ls.builtins.code_actions.eslint_d,
-          null_ls.builtins.formatting.stylua,
-          null_ls.builtins.formatting.rustfmt,
-          null_ls.builtins.diagnostics.shellcheck,
-          null_ls.builtins.formatting.shfmt,
-          null_ls.builtins.diagnostics.markdownlint,
-        },
-      }
-      vim.keymap.set("n", "<leader>f", vim.lsp.buf.format, {})
+      require("configs.lint")
     end,
   },
   -- Autocomplete
@@ -180,9 +212,36 @@ return {
     "nvim-treesitter/nvim-treesitter",
     opts = {
       ensure_installed = {
-        "vim", "lua", "vimdoc", "html", "css", "javascript",
-        "typescript", "json", "tsx", "markdown", "markdown_inline", "c", "cpp", "rust", "python", "bash", "yaml",
-        "toml", "cmake", "make", "dockerfile", "gitignore", "go","sql","java"
+        "vim",
+        "lua",
+        "vimdoc",
+        "html",
+        "css",
+        "javascript",
+        "typescript",
+        "json",
+        "jsonc",
+        "tsx",
+        "markdown",
+        "markdown_inline",
+        "c",
+        "cpp",
+        "rust",
+        "python",
+        "bash",
+        "yaml",
+        "toml",
+        "cmake",
+        "make",
+        "dockerfile",
+        "gitignore",
+        "go",
+        "sql",
+        "java",
+        "terraform",
+        "hcl",
+        "prisma",
+        "groovy",
       },
     },
   },
@@ -287,4 +346,3 @@ return {
     end,
   },
 }
-
