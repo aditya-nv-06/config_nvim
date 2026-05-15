@@ -6,7 +6,9 @@ local map = vim.keymap.set
 local telescope_ok, telescope = pcall(require, "telescope.builtin")
 
 map("n", ";", ":", { desc = "CMD enter command mode" })
-map("i", "jk", "<ESC>")
+map("i", "jk","<ESC>")
+-- Example mapping for mapping.lua
+map("n", "<leader>mp", "<CMD>MarkdownPreviewToggle<CR>", { desc = "Toggle Markdown Preview" })
 
 -- map({ "n", "i", "v" }, "<C-s>", "<cmd> w <cr>")
 

@@ -1,0 +1,62 @@
+return {
+  {
+    "neovim/nvim-lspconfig",
+    config = function()
+      require("configs.lspconfig")
+    end,
+  },
+  { "williamboman/mason.nvim", opts = {} },
+  { "williamboman/mason-lspconfig.nvim", opts = {} },
+  {
+    "WhoIsSethDaniel/mason-tool-installer.nvim",
+    dependencies = { "williamboman/mason.nvim" },
+    opts = {
+      ensure_installed = {
+        "lua-language-server",
+        "clangd",
+        "rust-analyzer",
+        "typescript-language-server",
+        "eslint-lsp",
+        "json-lsp",
+        "yaml-language-server",
+        "ansible-language-server",
+        "terraform-ls",
+        "tflint",
+        "bash-language-server",
+        "marksman",
+        "prisma-language-server",
+        "dockerfile-language-server",
+        "taplo",
+        "groovy-language-server",
+        "stylua",
+        "prettier",
+        "clang-format",
+        "rustfmt",
+        "shfmt",
+        "actionlint",
+        "ansible-lint",
+        "yamllint",
+        "markdownlint",
+        "shellcheck",
+        "eslint_d",
+      },
+      auto_update = false,
+      run_on_start = true,
+      start_delay = 3000,
+      debounce_hours = 12,
+    },
+  },
+  { "b0o/schemastore.nvim" },
+  {
+    "hrsh7th/nvim-cmp",
+    config = function()
+      require("configs.cmp")
+    end,
+  },
+  { "hrsh7th/cmp-nvim-lsp" },
+  { "hrsh7th/cmp-buffer" },
+  { "hrsh7th/cmp-path" },
+  { "hrsh7th/cmp-cmdline" },
+  { "L3MON4D3/LuaSnip" },
+  { "saadparwaiz1/cmp_luasnip" },
+}

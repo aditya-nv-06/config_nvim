@@ -1,9 +1,8 @@
 require("nvchad.configs.lspconfig").defaults()
 
-local lspconfig = require("lspconfig")
-
 local has_cmp, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
 local capabilities = vim.lsp.protocol.make_client_capabilities()
+
 if has_cmp then
   capabilities = cmp_nvim_lsp.default_capabilities(capabilities)
 end
@@ -18,22 +17,33 @@ local disable_formatting_servers = {
   cssls = true,
 }
 
-local on_attach = function(client, _)
-  if disable_formatting_servers[client.name] then
-    client.server_capabilities.documentFormattingProvider = false
-    client.server_capabilities.documentRangeFormattingProvider = false
+-- on_attach factory (new API friendly)
+local function on_attach(server_name)
+  return function(client)
+    if disable_formatting_servers[server_name] then
+      client.server_capabilities.documentFormattingProvider = false
+      client.server_capabilities.documentRangeFormattingProvider = false
+    end
   end
 end
 
+-- modern setup helper (replaces lspconfig.setup)
 local function setup(server, opts)
-  lspconfig[server].setup(vim.tbl_deep_extend("force", {
+  opts = vim.tbl_deep_extend("force", {
     capabilities = capabilities,
-    on_attach = on_attach,
-  }, opts or {}))
+    on_attach = on_attach(server),
+  }, opts or {})
+
+  vim.lsp.config(server, opts)
+  vim.lsp.enable(server)
 end
 
+-- =========================
 -- Core languages
-setup("clangd")
+-- =========================
+
+setup "clangd"
+
 setup("rust_analyzer", {
   settings = {
     ["rust-analyzer"] = {
@@ -43,8 +53,15 @@ setup("rust_analyzer", {
     },
   },
 })
+
 setup("ts_ls", {
-  filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "typescript.tsx" },
+  filetypes = {
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact",
+    "typescript.tsx",
+  },
   settings = {
     typescript = {
       inlayHints = {
@@ -70,12 +87,17 @@ setup("ts_ls", {
     },
   },
 })
+
 setup "eslint"
 
--- Infra and config languages
-setup("terraformls")
-setup("tflint")
-setup("ansiblels")
+-- =========================
+-- Infra / config languages
+-- =========================
+
+setup "terraformls"
+setup "tflint"
+setup "ansiblels"
+
 setup("jsonls", {
   settings = {
     json = {
@@ -84,13 +106,14 @@ setup("jsonls", {
     },
   },
 })
+
 setup("yamlls", {
   settings = {
     yaml = {
       validate = true,
       keyOrdering = false,
       schemaStore = { enable = false, url = "" },
-      schemas = has_schemastore and schemastore.yaml.schemas({
+      schemas = has_schemastore and schemastore.yaml.schemas {
         extra = {
           {
             description = "GitHub Workflow",
@@ -105,20 +128,24 @@ setup("yamlls", {
             url = "https://json.schemastore.org/github-action.json",
           },
         },
-      }) or nil,
+      } or nil,
     },
   },
 })
 
--- Docs and others
-setup("marksman")
-setup("prismals")
-setup("bashls")
-setup("dockerls")
-setup("taplo")
+-- =========================
+-- Docs / misc
+-- =========================
+
+setup "marksman"
+setup "prismals"
+setup "bashls"
+setup "dockerls"
+setup "taplo"
 setup("groovyls", { filetypes = { "groovy" } })
-setup("html")
-setup("cssls")
+setup "html"
+setup "cssls"
+
 setup("lua_ls", {
   settings = {
     Lua = {
