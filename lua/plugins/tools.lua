@@ -31,4 +31,5 @@ return {
       vim.g.mkdp_browser = "brave"
     end,
   },
+  {'akinsho/git-conflict.nvim', version = "*", config = true},
 }

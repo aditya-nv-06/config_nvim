@@ -1,6 +1,28 @@
 require("nvchad.configs.lspconfig").defaults()
 
+local lsp_config_api = vim.lsp and vim.lsp.config
+local lsp_enable_api = vim.lsp and vim.lsp.enable
+
+local lsp_config_callable =
+  (vim.is_callable and vim.is_callable(lsp_config_api))
+  or type(lsp_config_api) == "function"
+
+local lsp_config_is_table = type(lsp_config_api) == "table"
+
+local has_native_lsp_api =
+  type(lsp_enable_api) == "function"
+  and (lsp_config_callable or lsp_config_is_table)
+
+if not has_native_lsp_api then
+  vim.notify(
+    "LSP setup failed: Neovim 0.11+ native LSP API is required",
+    vim.log.levels.ERROR
+  )
+  return
+end
+
 local has_cmp, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
+
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 
 if has_cmp then
@@ -17,7 +39,7 @@ local disable_formatting_servers = {
   cssls = true,
 }
 
--- on_attach factory (new API friendly)
+-- on_attach factory
 local function on_attach(server_name)
   return function(client)
     if disable_formatting_servers[server_name] then
@@ -27,22 +49,31 @@ local function on_attach(server_name)
   end
 end
 
--- modern setup helper (replaces lspconfig.setup)
+-- modern setup helper
 local function setup(server, opts)
-  opts = vim.tbl_deep_extend("force", {
+  local config = vim.tbl_deep_extend("force", {
     capabilities = capabilities,
     on_attach = on_attach(server),
   }, opts or {})
 
-  vim.lsp.config(server, opts)
-  vim.lsp.enable(server)
+  if lsp_config_is_table and not lsp_config_callable then
+    lsp_config_api[server] = vim.tbl_deep_extend(
+      "force",
+      lsp_config_api[server] or {},
+      config
+    )
+  else
+    lsp_config_api(server, config)
+  end
+
+  lsp_enable_api(server)
 end
 
 -- =========================
 -- Core languages
 -- =========================
 
-setup "clangd"
+setup("clangd")
 
 setup("rust_analyzer", {
   settings = {
@@ -88,15 +119,15 @@ setup("ts_ls", {
   },
 })
 
-setup "eslint"
+setup("eslint")
 
 -- =========================
 -- Infra / config languages
 -- =========================
 
-setup "terraformls"
-setup "tflint"
-setup "ansiblels"
+setup("terraformls")
+setup("tflint")
+setup("ansiblels")
 
 setup("jsonls", {
   settings = {
@@ -112,8 +143,11 @@ setup("yamlls", {
     yaml = {
       validate = true,
       keyOrdering = false,
-      schemaStore = { enable = false, url = "" },
-      schemas = has_schemastore and schemastore.yaml.schemas {
+      schemaStore = {
+        enable = false,
+        url = "",
+      },
+      schemas = has_schemastore and schemastore.yaml.schemas({
         extra = {
           {
             description = "GitHub Workflow",
@@ -128,7 +162,7 @@ setup("yamlls", {
             url = "https://json.schemastore.org/github-action.json",
           },
         },
-      } or nil,
+      }) or nil,
     },
   },
 })
@@ -137,24 +171,31 @@ setup("yamlls", {
 -- Docs / misc
 -- =========================
 
-setup "marksman"
-setup "prismals"
-setup "bashls"
-setup "dockerls"
-setup "taplo"
-setup("groovyls", { filetypes = { "groovy" } })
-setup "html"
-setup "cssls"
+setup("marksman")
+setup("prismals")
+setup("bashls")
+setup("dockerls")
+setup("taplo")
+setup("groovyls", {
+  filetypes = { "groovy" },
+})
+
+setup("html")
+setup("cssls")
 
 setup("lua_ls", {
   settings = {
     Lua = {
-      diagnostics = { globals = { "vim" } },
+      diagnostics = {
+        globals = { "vim" },
+      },
       workspace = {
         library = vim.api.nvim_get_runtime_file("", true),
         checkThirdParty = false,
       },
-      telemetry = { enable = false },
+      telemetry = {
+        enable = false,
+      },
     },
   },
 })
