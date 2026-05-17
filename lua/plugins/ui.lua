@@ -1,56 +1,58 @@
 return {
   {
-  "folke/noice.nvim",
-  event = "VeryLazy",
-  dependencies = {
-    "MunifTanjim/nui.nvim",
-    "rcarriga/nvim-notify",
+    "folke/noice.nvim",
+    event = "VeryLazy",
+    dependencies = {
+      "MunifTanjim/nui.nvim",
+      "rcarriga/nvim-notify",
+    },
+
+    opts = {
+      cmdline = {
+        enabled = true,
+        view = "cmdline_popup",
+      },
+
+      messages = {
+        enabled = true,
+      },
+
+      popupmenu = {
+        enabled = true,
+        backend = "nui",
+      },
+
+      notify = {
+        enabled = true,
+      },
+
+      lsp = {
+        progress = {
+          enabled = true,
+        },
+        hover = {
+          enabled = true,
+        },
+        signature = {
+          enabled = true,
+        },
+      },
+
+      presets = {
+        command_palette = true,
+        long_message_to_split = true,
+      },
+    },
+
+    config = function(_, opts)
+      require("notify").setup({})
+      vim.notify = require("notify")
+
+      require("noice").setup(opts)
+    end,
   },
 
-  opts = {
-    cmdline = {
-      enabled = true,
-      view = "cmdline_popup",
-    },
-
-    messages = {
-      enabled = true,
-    },
-
-    popupmenu = {
-      enabled = true,
-      backend = "nui",
-    },
-
-    notify = {
-      enabled = true,
-    },
-
-    lsp = {
-      progress = {
-        enabled = true,
-      },
-      hover = {
-        enabled = true,
-      },
-      signature = {
-        enabled = true,
-      },
-    },
-
-    presets = {
-      command_palette = true,
-      long_message_to_split = true,
-    },
-  },
-
-  config = function(_, opts)
-    require("notify").setup({})
-    vim.notify = require("notify")
-
-    require("noice").setup(opts)
-  end,
-}, {
+  {
     "folke/trouble.nvim",
     cmd = "Trouble",
     opts = {},
@@ -63,10 +65,12 @@ return {
       { "<leader>xQ", "<cmd>Trouble qflist toggle<cr>", desc = "Quickfix List (Trouble)" },
     },
   },
+
   {
     "nvim-lualine/lualine.nvim",
     lazy = false,
     dependencies = { "nvim-tree/nvim-web-devicons" },
+
     config = function()
       require("lualine").setup({
         options = {
@@ -79,14 +83,45 @@ return {
       })
     end,
   },
+
   { "nvim-tree/nvim-web-devicons" },
-  { "EdenEast/nightfox.nvim", config = function() vim.cmd.colorscheme("carbonfox") end },
+
+  {
+    "EdenEast/nightfox.nvim",
+    config = function()
+      vim.cmd.colorscheme("carbonfox")
+    end,
+  },
+
   {
     "nvim-tree/nvim-tree.lua",
     dependencies = { "nvim-tree/nvim-web-devicons" },
-    keys = { { "<leader>e", "<cmd>NvimTreeToggle<cr>", desc = "File Explorer" } },
+
+    keys = {
+      { "<leader>e", "<cmd>NvimTreeToggle<cr>", desc = "File Explorer" },
+    },
+
     opts = {
-      view = { width = 20, side = "right", preserve_window_proportions = true },
+      view = {
+        width = 20,
+        side = "right",
+        preserve_window_proportions = true,
+      },
+    },
+  },
+
+  {
+    "sphamba/smear-cursor.nvim",
+    lazy = false,
+
+    opts = {
+      stiffness = 0.8,
+      trailing_stiffness = 0.6,
+      stiffness_insert_mode = 0.7,
+      trailing_stiffness_insert_mode = 0.7,
+      damping = 0.95,
+      damping_insert_mode = 0.95,
+      min_movement = 0.5,
     },
   },
 }
